@@ -40,7 +40,8 @@ console.log(a.n)
 console.log(b.n)
 
 ```
-解析：
+结果：11 undefined  
+解析：delete b.n 删除的是B函数的this.n; 对象属性比原型对象属性高，所以获取的不是A.prototype.n,而是A构造函数中的this.a
 
 ```javascript
 var obj = {
@@ -129,3 +130,45 @@ console.log('value' + '' ? false : true || 1 + 2 && 'false')
 ```
 结果：false  
 解析：（运算符直接优先级）// + 计算后： value ? false : ture || 1 + 2 && 'false'; && 计算后： value ? false : true || 'false'; || 计算后： value ? false : 'false'; 三元运算符计算后：false
+
+```javascript
+function out(x) {
+  var temp = 2
+  function inside(y) {
+    console.log(x + y + (temp--))
+  }
+  inside(5)
+}
+out(3)
+```
+结果：10  
+解析：--运算符前置和后置的区别;如果该运算符作为后置操作符，则返回它递减之前的值。如果该运算符作为前置操作符，则返回它递减之后的值。
+
+```javascript
+for (var a = 0; a < 5; a++) {
+  setTimeout(function() {
+    console.log(new Date, a)
+  }, 1000)
+}
+console.log(new Date, a)
+```
+结果：
+Fri Mar 25 2022 11:07:59 GMT+0800 (GMT+08:00) 5  
+Fri Mar 25 2022 11:08:00 GMT+0800 (GMT+08:00) 5  
+Fri Mar 25 2022 11:08:00 GMT+0800 (GMT+08:00) 5  
+Fri Mar 25 2022 11:08:00 GMT+0800 (GMT+08:00) 5  
+Fri Mar 25 2022 11:08:00 GMT+0800 (GMT+08:00) 5  
+Fri Mar 25 2022 11:08:00 GMT+0800 (GMT+08:00) 5  
+解析：a是取全局作用域，for循环已经执行完成了最后a=5;可以使用let解决这个问题。循环五次结果都是间隔1秒后输出来,可以了解一下：[JavaScript 运行机制](http://www.ruanyifeng.com/blog/2014/10/event-loop.html)
+
+```javascript
+let arr = [1,2,3]
+function play(arr) {
+  arr[3] = 4
+  arr = [100]
+}
+play(arr)
+console.log(arr)
+```
+结果： [1, 2, 3, 4]  
+解析： arr指向了内存中新的arr数组, 切断了内部作用域arr和全局arr得关系，分别指向不同的数组。
